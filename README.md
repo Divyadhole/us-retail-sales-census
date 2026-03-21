@@ -177,4 +177,4 @@ python src/fetch_census.py
 
 ---
 
-*Junior Data Analyst Portfolio — Project 6 of 40 | Data: census.gov (public domain)*
+
