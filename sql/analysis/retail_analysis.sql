@@ -116,3 +116,24 @@ SELECT
 FROM retail_monthly
 WHERE rank_highest <= 10 OR rank_lowest <= 5
 ORDER BY sales_M DESC;
+
+-- 7. E-commerce market share by quarter
+SELECT year, quarter,
+    ecommerce_sales,
+    total_retail_sales,
+    ROUND(100.0 * ecommerce_sales / total_retail_sales, 1) AS ecomm_share_pct,
+    ROUND(100.0 * ecommerce_sales / total_retail_sales -
+          LAG(100.0 * ecommerce_sales / total_retail_sales)
+          OVER (ORDER BY year, quarter), 2) AS qoq_share_change
+FROM quarterly_retail
+ORDER BY year, quarter;
+
+-- 8. COVID impact by retail category
+SELECT category,
+    MAX(CASE WHEN year=2019 THEN annual_sales END) pre_covid,
+    MAX(CASE WHEN year=2020 THEN annual_sales END) covid_year,
+    ROUND(100.0*(MAX(CASE WHEN year=2020 THEN annual_sales END) -
+                 MAX(CASE WHEN year=2019 THEN annual_sales END))
+          / MAX(CASE WHEN year=2019 THEN annual_sales END), 1) AS yoy_change_pct
+FROM category_sales
+GROUP BY category ORDER BY yoy_change_pct;
